@@ -115,7 +115,11 @@ class Api::PipelinesController < Api::ApiController
   def schedule
     pipeline_name = params[:pipeline_name]
     revisions = merge_revisions(pipeline_name, params["materials"]||{}, params["original_fingerprint"]||{}, params['material_fingerprint']||{})
-    pipeline_scheduler.manualProduceBuildCauseAndSave(pipeline_name, @user, ScheduleOptions.new(revisions, params[:variables]||{}, params[:secure_variables]||{}), result = HttpOperationResult.new)
+    if(params["SUDO"])
+     pipeline_scheduler.manualProduceBuildCauseAndSaveSUDO(pipeline_name, params["SUDO"], ScheduleOptions.new(revisions, params[:variables]||{}, params[:secure_variables]||{}), result = HttpOperationResult.new)
+    else
+     pipeline_scheduler.manualProduceBuildCauseAndSave(pipeline_name, @user, ScheduleOptions.new(revisions, params[:variables]||{}, params[:secure_variables]||{}), result = HttpOperationResult.new)
+    end
     render_operation_result(result)
   end
 
