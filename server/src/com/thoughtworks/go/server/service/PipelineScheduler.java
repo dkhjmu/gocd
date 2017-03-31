@@ -145,6 +145,11 @@ public class PipelineScheduler implements ConfigChangedListener, GoMessageListen
         buildCauseProducerService.manualSchedulePipeline(username, new CaseInsensitiveString(pipelineName), scheduleOptions, result);
         LOGGER.info(String.format("[Pipeline Schedule] [Processed] Manual trigger of pipeline '%s' processed with result '%s'", pipelineName, result.getServerHealthState()));
     }
+    
+    public void manualProduceBuildCauseAndSaveSUDO(String pipelineName, String sudo, ScheduleOptions scheduleOptions, OperationResult result){
+        Username username = new Username(new CaseInsensitiveString(sudo));
+        manualProduceBuildCauseAndSave(pipelineName, username, scheduleOptions, result);
+    }
 
     private boolean hasUsedUnconfiguredVariable(String pipelineName, EnvironmentVariablesConfig environmentVariables, OperationResult result) {
         for (EnvironmentVariableConfig variable : environmentVariables) {
