@@ -61,6 +61,8 @@ public class GoServer {
         if (validation.isSuccessful()) {
             subprocessLogger.registerAsExitHook("Following processes were alive at shutdown: ");
             startServer();
+            System.out.println("GO server Started!");
+            LOG.info("GO server Started!");
         } else {
             validation.logErrors();
         }
