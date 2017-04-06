@@ -75,7 +75,9 @@ module ApiV1
                         else
                           params[:checkin_aliases]
                         end
-
+	  if params[:password]
+	  	user_service.updatePassword(user, params[:password])
+	  end
       user_service.save(user, to_tristate(params[:enabled]), to_tristate(params[:email_me]), params[:email], checkin_aliases, result)
     end
 

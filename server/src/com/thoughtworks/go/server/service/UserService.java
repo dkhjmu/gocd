@@ -45,6 +45,8 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 
 import java.util.*;
+import java.util.Properties;
+
 
 @Service
 public class UserService {
@@ -113,6 +115,43 @@ public class UserService {
         }
         return false;
     }
+    
+    private Properties loadPasswordFile() throws IOException {
+        final String passwordFilePath = goConfigService.security().passwordFileConfig().path();
+        Properties properties = new Properties();
+        InputStream inputStream = null;
+        try {
+            inputStream = new FileInputStream(passwordFilePath);
+            properties.load(inputStream);
+        } finally {
+            IOUtils.closeQuietly(inputStream);
+        }
+        return properties;
+    }
+
+    public void savePropertiesPile(Properties properties) {
+        final String passwordFilePath = goConfigService.security().passwordFileConfig().path();
+        try {
+            File f = new File(passwordFilePath);
+            OutputStream out = new FileOutputStream( f );
+            properties.store(out, "This is an optional header comment string");
+        }
+        catch (Exception e ) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void updatePassword(User user, String password){
+    	try{
+    		Properties properties = loadPasswordFile();
+            properties.setProperty(user.getName(), password);
+            savePropertiesPile(properties);
+    	}catch (Exception e){
+    		e.printStackTrace();
+    	}
+    	
+    }
+    
 
     public User save(final User user, TriState enabled, TriState emailMe, String email, String checkinAliases, LocalizedOperationResult result) {
         if (enabled.isTrue()) {
